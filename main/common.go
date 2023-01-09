@@ -2,8 +2,11 @@ package main
 
 import (
 	"bufio"
+	"fmt"
+	"math/rand"
 	"os"
 	"os/exec"
+	"time"
 )
 
 func clearConsole() {
@@ -18,14 +21,26 @@ func scanner() string {
 	return sc.Text()
 }
 
-type BigMap interface {
-	getMapBody() []string
-	// 进入地图
-	enter(wc *WordContext)
-	// 退出地图
-	exit()
-	queryMapName() string
+func printLine() {
+	for i := 0; i < 80; i++ {
+		fmt.Printf("-")
+	}
+	fmt.Println("")
 }
 
-// WordMap 世界地图
-var WordMap = map[string]BigMap{"烈焰城": &VillageMap{name: "烈焰城"}}
+func randNum(min int, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min) + min
+}
+
+var now = time.Now()
+
+func getCurrentMinute() int {
+	return now.Minute()
+}
+func MaxInt(left int, right int) int {
+	if left < right {
+		return right
+	}
+	return left
+}
