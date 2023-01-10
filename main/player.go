@@ -28,7 +28,7 @@ type Player struct {
 
 // 显示玩家信息
 func (player *Player) show() {
-	fmt.Printf("角色\t血量: %v\t饥饿值: %v\t攻击力: %v\t防御力： %v\n", player.hp, player.hunger, player.ant, player.define)
+	fmt.Printf("%v\t血量: %v\t饥饿值: %v\t攻击力: %v\t防御力： %v\n", player.name, player.hp, player.hunger, player.ant, player.define)
 }
 
 // 玩家普通攻击

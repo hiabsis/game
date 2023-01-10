@@ -25,7 +25,7 @@ func printLine() {
 	for i := 0; i < 80; i++ {
 		fmt.Printf("-")
 	}
-	fmt.Println("")
+	fmt.Println(" ")
 }
 
 func randNum(min int, max int) int {

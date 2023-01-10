@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/logrusorgru/aurora"
 	"strconv"
 	"sync"
 	"time"
@@ -180,5 +181,27 @@ func (world *World) help() {
 			break
 		}
 	}
+
+}
+
+func (world *World) startGame() {
+	for {
+		printLine()
+		fmt.Printf("胡汉三:%v\n", aurora.Yellow(" 欢迎来到异世界,开启你的传奇冒险吧"))
+		printLine()
+		fmt.Printf("请输入名字:")
+		world.player.name = scanner()
+		printLine()
+		fmt.Printf("胡汉三: %v\n", aurora.Yellow(world.player.name+"你的天赋属性"))
+		world.player.show()
+		printLine()
+		fmt.Printf("确认开始异世界冒险,输入%v,重选输入其他按键\n", aurora.Red("C"))
+		cmd := scanner()
+		if cmd == "c" || cmd == "C" {
+			break
+		}
+		clearConsole()
+	}
+	world.init()
 
 }

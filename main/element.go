@@ -185,3 +185,7 @@ func (factory *ElementFactory) instanceWood(x int, y int) *Element {
 		number: randNum(2, 5),
 	}
 }
+
+func (factory *ElementFactory) instanceStock() {
+
+}
