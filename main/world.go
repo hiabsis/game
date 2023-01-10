@@ -134,7 +134,7 @@ func (world *World) show() {
 	clearConsole()
 
 	printLine()
-	fmt.Printf("时间\t第%v天第%v时\n", world.time[0], world.time[1])
+	fmt.Printf("时间\t第%v天第%v时\t\t游戏帮助%v\n", world.time[0], world.time[1], aurora.Yellow("H"))
 	// 角色信息
 	world.player.show()
 	printLine()
@@ -192,7 +192,7 @@ func (world *World) startGame() {
 		fmt.Printf("请输入名字:")
 		world.player.name = scanner()
 		printLine()
-		fmt.Printf("胡汉三: %v\n", aurora.Yellow(world.player.name+"你的天赋属性"))
+		fmt.Printf("胡汉三: %v\n", aurora.Yellow("你的天赋属性"))
 		world.player.show()
 		printLine()
 		fmt.Printf("确认开始异世界冒险,输入%v,重选输入其他按键\n", aurora.Red("C"))

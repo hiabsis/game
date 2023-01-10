@@ -92,10 +92,11 @@ func (factory *ElementFactory) instancePig(x int, y int) *Element {
 					return
 				}
 				hurt = MaxInt(1, element.ant-player.define)
-				element.detail += fmt.Sprintf("%v反击造成%v伤害\n", element.name, hurt)
+				player.action += fmt.Sprintf("%v反击造成%v伤害\n", element.name, hurt)
 				player.hp -= hurt
 				if player.hp == 0 {
 					player.action += fmt.Sprintf("你已被%v击杀\n", aurora.Red(element.name))
+					WORLD.startGame()
 				}
 
 			}
