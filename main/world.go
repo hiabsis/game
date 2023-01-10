@@ -19,6 +19,12 @@ type World struct {
 	// 背包
 	backpack *Backpack
 	time     []int
+	// 玩家活动信息
+	actionInfo string
+}
+
+func (world *World) setActionInfo(info string) {
+	world.actionInfo = info
 }
 
 // 初始化世界
@@ -77,21 +83,27 @@ func (world *World) monitorKeyBoard() {
 
 // 移动角色
 func (world *World) movePlayer(cmd string) {
-
+	world.player.action = ""
 	if cmd == "s" || cmd == "S" {
 		world.player.y -= 1
+
+		world.player.action = "往南移动 距离+1\n"
 	} else if cmd == "w" || cmd == "W" {
 		world.player.y += 1
+		world.player.action = "往北移动 距离+1\n"
 	} else if cmd == "a" || cmd == "A" {
 		world.player.x -= 1
+		world.player.action = "往西移动 距离+1\n"
 	} else if cmd == "d" || cmd == "D" {
 		world.player.x += 1
+		world.player.action = "往东移动 距离+1\n"
 	}
 
 }
 
 // 打开背包
 func (world *World) openPack() {
+	WORLD.player.action = ""
 	world.backpack.show()
 
 	world.backpack.monitorKeyboard()
@@ -127,6 +139,10 @@ func (world *World) show() {
 	printLine()
 	world.getElement().show(world.getElement())
 	printLine()
+	if world.player.action != "" {
+		fmt.Print(world.player.action)
+		printLine()
+	}
 
 }
 
@@ -165,28 +181,4 @@ func (world *World) help() {
 		}
 	}
 
-}
-
-var WORLD = &World{
-	wg: &sync.WaitGroup{},
-	player: &Player{
-		name:      "cyw",
-		x:         0,
-		y:         0,
-		maxHp:     100,
-		hp:        100,
-		maxHunger: 100,
-		hunger:    100,
-		ant:       randNum(100, 200),
-		define:    randNum(1, 6),
-	},
-	elements:       make(map[string]*Element),
-	elementFactory: &ElementFactory{},
-	backpack: &Backpack{
-		size:  30,
-		cap:   0,
-		items: make([]*Element, 0),
-		sign:  make(chan bool, 1),
-	},
-	time: []int{1, 0, getCurrentMinute()},
 }

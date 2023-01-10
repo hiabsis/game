@@ -44,3 +44,9 @@ func MaxInt(left int, right int) int {
 	}
 	return left
 }
+func MinInt(left int, right int) int {
+	if left > right {
+		return right
+	}
+	return left
+}

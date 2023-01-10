@@ -53,7 +53,7 @@ func (factory *ElementFactory) instanceTree(x int, y int) *Element {
 		command: func(player *Player, element *Element, command string) {
 			if command == "c" || command == "C" {
 				if element.hp > 0 {
-					element.hp -= 3
+					element.hp -= 10
 					if element.hp <= 0 {
 						element = factory.instanceWood(element.x, element.y)
 						WORLD.addElement(element)
@@ -84,19 +84,18 @@ func (factory *ElementFactory) instancePig(x int, y int) *Element {
 			if command == "c" || command == "C" {
 				hurt := MaxInt(1, player.ant-element.define)
 				element.hp -= hurt
-				element.detail += fmt.Sprintf("玩家攻击%v造成%v伤害\n", element.name, hurt)
+				player.action = ""
+				player.action += fmt.Sprintf("玩家攻击%v造成%v伤害\n", element.name, hurt)
 				if element.hp <= 0 {
-					element.detail += fmt.Sprintf("击杀野猪野猪")
-					WORLD.removeElement(element)
-					element = factory.instancePigMeat(x, y)
-					WORLD.addElement(element)
+					player.action += fmt.Sprintf("玩家击杀野猪野猪\n")
+					WORLD.addElement(factory.instancePigMeat(element.x, element.y))
 					return
 				}
 				hurt = MaxInt(1, element.ant-player.define)
 				element.detail += fmt.Sprintf("%v反击造成%v伤害\n", element.name, hurt)
 				player.hp -= hurt
 				if player.hp == 0 {
-					element.detail += fmt.Sprintf("你已被击杀")
+					player.action += fmt.Sprintf("你已被%v击杀\n", aurora.Red(element.name))
 				}
 
 			}
@@ -120,6 +119,9 @@ func (factory *ElementFactory) instanceSpace(x int, y int) *Element {
 		name:   fmt.Sprintf("%v\t", aurora.Green("空地")),
 		detail: fmt.Sprintf(""),
 		command: func(player *Player, element *Element, command string) {
+			if command == "c" || command == "C" {
+				player.action = ""
+			}
 			return
 		},
 		x: x,
@@ -134,10 +136,22 @@ func (factory *ElementFactory) instanceSpace(x int, y int) *Element {
 func (factory *ElementFactory) instancePigMeat(x int, y int) *Element {
 	return &Element{
 		name:   fmt.Sprintf("%v\t", aurora.Green("猪肉")),
-		detail: fmt.Sprintf(""),
+		detail: fmt.Sprintf("猪肉,可以恢复一定的血量和减少饥饿值,输入%v使用物品\n", aurora.Green("U")),
 		command: func(player *Player, element *Element, command string) {
 			if command == "c" || command == "C" {
 				player.pickUp(element)
+			}
+			if command == "U" || command == "u" {
+				player.action = ""
+				WORLD.backpack.reduceNumber(element)
+				player.action += fmt.Sprintf("玩家使用%v 数量：%v\n", aurora.Green(element.name), aurora.Red("1"))
+				recoverHp := randNum(5, 20)
+				recoverHungry := randNum(5, 30)
+				player.action += fmt.Sprintf("恢复血量%v,减少%v饥饿值\n", aurora.Green(recoverHp), aurora.Green(recoverHungry))
+
+				player.hp = MinInt(recoverHp+player.hp, player.maxHp)
+				player.hunger = MaxInt(0, player.hunger-recoverHungry)
+				WORLD.backpack.show()
 			}
 		},
 		x: x,
@@ -153,8 +167,8 @@ func (factory *ElementFactory) instancePigMeat(x int, y int) *Element {
 }
 func (factory *ElementFactory) instanceWood(x int, y int) *Element {
 	return &Element{
-		name: fmt.Sprintf("%v\t", aurora.Yellow("木头")),
-
+		name:   fmt.Sprintf("%v\t", aurora.Yellow("木头")),
+		detail: fmt.Sprintf("木头可以作为建筑的%v和%v\n", aurora.Yellow("基础材料"), aurora.Yellow("燃料")),
 		command: func(player *Player, element *Element, command string) {
 			if command == "c" || command == "C" {
 				player.pickUp(element)
